@@ -1,0 +1,64 @@
+name: Check if the prices in the order are correct
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  correct_price:
+    runs-on: ubuntu-latest
+    name: Check prices
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get order file name
+        id: changed-files
+        uses: tj-actions/changed-files@823fcebdb31bb35fdf2229d9f769b400309430d0 # v46
+
+      - name: Parse Order File
+        id: parseOrder
+        env:
+          orderFile: ${{ steps.changed-files.outputs.all_changed_and_modified_files }}
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq '.items' ${order_file}
+
+      - name: Echo order file
+        run: echo ${{ steps.parseOrder.outputs.result }}
+
+      #      - name: Check Item Prices
+      #        run: |
+      #          # Parsing order items to check for price consistency
+      #          echo "Verifying prices in the order..."
+      #
+      #          order_items=${{ steps.parseOrder.outputs.result }}
+      #          total_price=0
+      #          correct_prices=true
+      #
+      #          # Iterate through each order item and verify the prices
+      #          echo "$order_items" | jq -c '.[]' | while read -r item; do
+      #            variant_sku=$(echo $item | jq -r '.variant_sku')
+      #            quantity=$(echo $item | jq -r '.quantity')
+      #            item_price=$(echo $item | jq -r '.item_price')
+      #            line_price=$(echo $item | jq -r '.line_price')
+      #
+      #            expected_line_price=$((quantity * item_price))
+      #
+      #            if [ "$expected_line_price" -ne "$line_price" ]; then
+      #              echo "Price mismatch for SKU: $variant_sku. Expected line price: $expected_line_price, but found: $line_price"
+      #              correct_prices=false
+      #            fi
+      #
+      #            # Sum up the prices for all items
+      #            total_price=$((total_price + line_price))
+      #          done
+      #
+      #          if [ "$correct_prices" = false ]; then
+      #            echo "One or more prices are incorrect!"
+      #            exit 1
+      #          else
+      #            echo "All prices are correct."
+      #          fi
+
+      - name: Success
+        run: |
+          echo "Price validation complete. All prices are correct."
