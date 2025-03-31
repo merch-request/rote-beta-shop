@@ -28,11 +28,13 @@ jobs:
         uses: tj-actions/changed-files@823fcebdb31bb35fdf2229d9f769b400309430d0 # v46
 
       - name: Prepare order file for script
-        run: mv ${{ steps.parseOrder.outputs.result }} currentOrder.yaml
+        env:
+          orderFile: ${{ steps.changed-files.outputs.all_changed_and_modified_files }}
+        run: mv $orderFile currentOrder.yaml
 
       - name: Run createPaymentLink script
         id: create_link
-        run: ./main/.github/workflows/scripts/createPaymentLink {{secrets.STRIPE_TOKEN}}
+        run: ./main/.github/workflows/scripts/createPaymentLink ${{secrets.STRIPE_TOKEN}}
 
       - name: Comment PR
         uses: actions/github-script@v7

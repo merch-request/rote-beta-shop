@@ -20,7 +20,7 @@ jobs:
           orderFile: ${{ steps.changed-files.outputs.all_changed_and_modified_files }}
         uses: mikefarah/yq@master
         with:
-          cmd: yq '.items' ${order_file}
+          cmd: yq '.items' ${order_file
 
       - name: Echo order file
         run: echo ${{ steps.parseOrder.outputs.result }}
