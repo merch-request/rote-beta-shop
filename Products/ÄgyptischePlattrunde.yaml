@@ -3,3 +3,4 @@ variants:
   - sku: Plattrunde2KG
     name: Ägyptische Plattrunde 2kg Kiste
     price: 5
+    stripe_price_id: price_1R8egLI7jQgZdTPv4G9sh6fQ
